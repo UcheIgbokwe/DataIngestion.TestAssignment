@@ -10,7 +10,7 @@ namespace Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=IngestionDb;User Id=sa;Password=Ebubechi89;"));
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=IngestionDb;User Id=sa;Password=sa;"));
             services.AddSingleton<IDrillData, DrillDataService>();
 
             return services;

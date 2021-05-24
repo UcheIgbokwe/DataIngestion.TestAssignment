@@ -8,7 +8,7 @@ namespace Infrastructure.Persistence.DataContext
         public AppDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=IngestionDb;User Id=sa;Password=Ebubechi89;");
+            optionsBuilder.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=IngestionDb;User Id=sa;Password=sa;");
 
             return new AppDbContext(optionsBuilder.Options);
         }
