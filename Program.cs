@@ -2,9 +2,12 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Infrastructure.Persistence.DataContext;
+using Infrastructure.Persistence.Interface;
+using Infrastructure.Persistence.Services;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace DataIngestion.TestAssignment
@@ -19,6 +22,8 @@ namespace DataIngestion.TestAssignment
 				.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddTransient<Worker>();
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=IngestionDb;User Id=sa;Password=Ebubechi89;"));
+            services.AddSingleton<IDrillData, DrillDataService>();
 
             var serviceProvider = services.BuildServiceProvider();
             

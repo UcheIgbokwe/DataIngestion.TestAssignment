@@ -1,5 +1,6 @@
 using System.Threading;
 using Application.Features.GoogleDrive.Commands.DownloadFile;
+using Infrastructure.Persistence.Interface;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -9,8 +10,10 @@ namespace DataIngestion.TestAssignment
     {
         private readonly IMediator _mediator;
         private readonly ILogger<Worker> _logger;
-        public Worker(IMediator mediator, ILogger<Worker> logger)
+        private readonly IDrillData _drillData;
+        public Worker(IMediator mediator, ILogger<Worker> logger, IDrillData drillData)
         {
+            _drillData = drillData;
             _logger = logger;
             _mediator = mediator;
 
@@ -26,14 +29,18 @@ namespace DataIngestion.TestAssignment
                     GoogleDriveApiKey = "AIzaSyAuSWvpMscZhppVbvgEXjc5GlOr-aMrP64"
                 };
 
-                var response = await _mediator.Send(request, cancellationToken);
+                //Download and extract files.    
+                //await _mediator.Send(request, cancellationToken);
+
+                //Populate respective tables.
+                await _drillData.DrillData("artist_collection");
 
             }
             catch (System.Exception ex)
             {
                 _logger.LogError($"{ex.Message}");
                 throw new System.ApplicationException();
-            }  
+            }
         }
     }
 }

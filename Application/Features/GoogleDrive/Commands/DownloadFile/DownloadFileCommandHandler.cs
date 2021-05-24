@@ -40,24 +40,28 @@ namespace Application.Features.GoogleDrive.Commands.DownloadFile
                     foreach (var file in (JArray)contents["files"])
                     {
                         var id = (string)file["id"];
-                        //var name = (string)file["name"];
+                        var name = (string)file["name"];
+                        (bool, string) newValue = CheckZipFile(name);
 
-                        var name = "artist_collection.zip";
-                        var name2 = "artist_collection";
+                        if(newValue.Item1)
+                        {
 
-                        var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", name);
-                        var extractFileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", name2);
+                            var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", name);
+                            var extractFileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", newValue.Item2);
+                    
+                            if(!CheckFileExist(fileName))
+                            {
+                                //var downloadUri = $"https://drive.google.com/uc?export=download&id={id}";
+                                var downloadUri = "https://drive.google.com/uc?export=download&id=1_7DEkjboKGermJoHtsN-EQsjZa9jeOVz";
 
-                        
-                        //var downloadUri = $"https://drive.google.com/uc?export=download&id={id}";
-                        var downloadUri = "https://drive.google.com/uc?export=download&id=1_7DEkjboKGermJoHtsN-EQsjZa9jeOVz";
+                                var wc = new System.Net.WebClient();
+                                wc.DownloadFile(downloadUri, fileName);
 
-                        var wc = new System.Net.WebClient();
-                        wc.DownloadFile( downloadUri, fileName);
+                                ZipFile.ExtractToDirectory(fileName, extractFileName);
 
-                        ZipFile.ExtractToDirectory(fileName, extractFileName);
-
-                        Console.WriteLine($"{id}:{name}");
+                                Console.WriteLine($"{id}:{name}");
+                            }
+                        }
                     }
                 } while (!String.IsNullOrEmpty(nextPageToken)); 
 
@@ -72,6 +76,23 @@ namespace Application.Features.GoogleDrive.Commands.DownloadFile
             
         }
 
+        public static bool CheckFileExist(string filePath)
+        {
+            return File.Exists(filePath);
+        }
+
+        public static (bool, string) CheckZipFile(string fileName)
+        {
+            if(!string.IsNullOrEmpty(fileName))
+            {
+                bool check = fileName.EndsWith("zip");
+                if (check)
+                {
+                    return (true, fileName[0..^4]);
+                }
+            }
+            return (false, null);
+        }
 
     }
 }
