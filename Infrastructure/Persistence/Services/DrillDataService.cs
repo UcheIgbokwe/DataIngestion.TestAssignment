@@ -26,7 +26,7 @@ namespace Infrastructure.Persistence.Services
         {
             try
             {
-                var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", FileTypes.ArtistCollection, FileTypes.ArtistCollection);
+                var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", fileType, fileType);
                 using var streamer = File.OpenText(fileName);
                 int row = 0;
                 string record;

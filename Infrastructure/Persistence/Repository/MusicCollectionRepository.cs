@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Domain.Model;
@@ -163,6 +164,49 @@ namespace Infrastructure.Persistence.Repository
             {
                 _logger.LogError(ex.Message);
                 return false;
+            }
+        }
+
+        public List<Album> GetAlbums(int size, int skip)
+        {
+            try
+            {
+                var load = (from a in _dbContext.ArtistCollections
+                                join b in _dbContext.Collections on a.CollectionId equals b.CollectionId
+                                join c in _dbContext.CollectionMatches on a.CollectionId equals c.CollectionId
+                                select new Album
+                                {
+                                    Id = b.CollectionId,
+                                    Name = b.Name,
+                                    ImageUrl = b.ViewUrl,
+                                    Upc = c.Upc,
+                                    ReleaseDate = b.OriginalReleaseDate,
+                                    IsCompilation = b.IsCompilation,
+                                    Label = b.LabelStudio,
+                                    Url = b.ArtworkUrl,
+                                    ArtistId = a.ArtistId
+                                }).Skip(skip).Take(size).ToList();
+                
+                var refinedLoad = load.Select(d => d.Artists = new List<Artistt>(GetArtistts(d.ArtistId)));
+                return load;
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
+            }
+        }
+
+        public List<Artistt> GetArtistts(long Id)
+        {
+            try
+            {
+                return _dbContext.Artists.Where(c => c.ArtistId == Id).Select(p => new Artistt { Id = p.ArtistId, Name = p.Name}).Distinct().ToList();
+            }
+            catch (DbUpdateException ex)
+            {
+                _logger.LogError(ex.Message);
+                return null;
             }
         }
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using Application.Features.GoogleDrive.Commands.DownloadFile;
+using Application.Features.GoogleDrive.Commands.ElasticSearch;
 using Domain;
 using Infrastructure.Persistence.Interface;
 using MediatR;
@@ -13,8 +14,10 @@ namespace DataIngestion.TestAssignment
         private readonly IMediator _mediator;
         private readonly ILogger<Worker> _logger;
         private readonly IDrillData _drillData;
-        public Worker(IMediator mediator, ILogger<Worker> logger, IDrillData drillData)
+        private readonly IMusicCollectionRepository _musicCollection;
+        public Worker(IMediator mediator, ILogger<Worker> logger, IDrillData drillData, IMusicCollectionRepository musicCollection)
         {
+            _musicCollection = musicCollection;
             _drillData = drillData;
             _logger = logger;
             _mediator = mediator;
@@ -32,12 +35,26 @@ namespace DataIngestion.TestAssignment
                 };
 
                 //Download and extract files.    
-                //await _mediator.Send(request, cancellationToken);
+                await _mediator.Send(request, cancellationToken);
 
                 //Populate respective tables.
-                foreach (FType fileType in (FType[]) Enum.GetValues(typeof(FType)))
+                foreach (FType fileType in (FType[])Enum.GetValues(typeof(FType)))
                 {
                     await _drillData.DrillData(fileType.ToString());
+                }
+
+                //Insert into Elastic Search.
+                var size = 50;
+                var skip = 0;
+            
+                for (var i = 0; i < size; i++)
+                {
+                    var elasticRequest = new ElasticSearchCommand()
+                    {
+                        Library = _musicCollection.GetAlbums(size, skip)
+                    };
+                    await _mediator.Send(elasticRequest, cancellationToken);
+                    skip += size;
                 }
 
             }

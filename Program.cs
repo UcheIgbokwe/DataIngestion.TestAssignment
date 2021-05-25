@@ -20,7 +20,6 @@ namespace DataIngestion.TestAssignment
             try
             {
                 var services = new ServiceCollection()
-				//.AddServices("albums")
                 .AddInfrastructureServices()
                 .AddLogging(b => b.AddConsole())
 				.AddMediatR(Assembly.GetExecutingAssembly());
@@ -36,6 +35,11 @@ namespace DataIngestion.TestAssignment
                 logger.LogInformation("Starting Application!");
 
                 worker.Run(CancellationToken.None);
+
+                #if DEBUG
+                    Console.WriteLine("Press enter to close...");
+                    Console.ReadLine();
+                #endif
             }
             catch (System.Exception ex)
             {

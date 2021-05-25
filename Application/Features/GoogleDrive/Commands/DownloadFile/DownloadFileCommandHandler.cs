@@ -50,8 +50,8 @@ namespace Application.Features.GoogleDrive.Commands.DownloadFile
                     
                             if(!CheckFileExist(fileName))
                             {
-                                //var downloadUri = $"https://drive.google.com/uc?export=download&id={id}";
-                                var downloadUri = "https://drive.google.com/uc?export=download&id=1_7DEkjboKGermJoHtsN-EQsjZa9jeOVz";
+                                var downloadUri = $"https://drive.google.com/uc?export=download&id={id}";
+                                //var downloadUri = "https://drive.google.com/uc?export=download&id=1_7DEkjboKGermJoHtsN-EQsjZa9jeOVz";
 
                                 var wc = new System.Net.WebClient();
                                 wc.DownloadFile(downloadUri, fileName);

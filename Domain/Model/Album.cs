@@ -7,14 +7,15 @@ namespace Domain.Model
     [ElasticsearchType]
     public class Album
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
         public string Upc { get; set; }
-        public DateTime ReleaseDate { get; set; }
-        public bool IsCompilation { get; set; }
+        public string ReleaseDate { get; set; }
+        public string IsCompilation { get; set; }
         public string Label { get; set; }
         public string ImageUrl { get; set; }
+        public long ArtistId { get; set; }
         public ICollection<Artistt> Artists { get; set; } = new List<Artistt>();
 
     }
@@ -22,7 +23,7 @@ namespace Domain.Model
     [ElasticsearchType]
     public class Artistt
     {
-        public string Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }

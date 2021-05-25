@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataIngestion.TestAssignment.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210525131526_SecondCreate")]
-    partial class SecondCreate
+    [Migration("20210525203704_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
