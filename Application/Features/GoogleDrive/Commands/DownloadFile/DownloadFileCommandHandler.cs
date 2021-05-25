@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.BZip2;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

@@ -2,7 +2,7 @@
 
 namespace DataIngestion.TestAssignment.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class SecondCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,9 +12,9 @@ namespace DataIngestion.TestAssignment.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ArtistId = table.Column<int>(type: "int", nullable: false),
+                    ArtistId = table.Column<long>(type: "bigint", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    CollectionId = table.Column<int>(type: "int", nullable: false),
+                    CollectionId = table.Column<long>(type: "bigint", nullable: false),
                     IsPrimaryArtist = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExportDate = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -30,7 +30,7 @@ namespace DataIngestion.TestAssignment.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExportDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ArtistId = table.Column<int>(type: "int", nullable: false),
+                    ArtistId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsActualArtist = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ViewUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -65,7 +65,7 @@ namespace DataIngestion.TestAssignment.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExportDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CollectionId = table.Column<int>(type: "int", nullable: false),
+                    CollectionId = table.Column<long>(type: "bigint", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TitleVersion = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SearchTerms = table.Column<string>(type: "nvarchar(max)", nullable: true),
