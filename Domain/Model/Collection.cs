@@ -7,7 +7,7 @@ namespace Domain.Model
         public string ExportDate { get; set; }
         
         [ForeignKey("ArtistCollection")]
-		public int CollectionId { get; set; }
+		public long CollectionId { get; set; }
 		public string Name { get; set; }
 		public string TitleVersion { get; set; }
 		public string SearchTerms { get; set; }

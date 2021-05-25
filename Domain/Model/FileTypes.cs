@@ -7,4 +7,12 @@ namespace Domain
         public const string Collection = "collection";
         public const string CollectionMatch = "collection_match";
     }
+
+    public enum FType
+    {
+        artist_collection,
+        artist,
+        collection,
+        collection_match
+    }
 }

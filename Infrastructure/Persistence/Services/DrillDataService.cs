@@ -12,8 +12,12 @@ namespace Infrastructure.Persistence.Services
     public class DrillDataService : IDrillData
     {
         private readonly ILogger<DrillDataService> _logger;
-        public DrillDataService(ILogger<DrillDataService> logger)
+        private readonly IMusicCollectionRepository _musicCollection;
+        private readonly IPopulate _populate;
+        public DrillDataService(ILogger<DrillDataService> logger, IMusicCollectionRepository musicCollection, IPopulate populate)
         {
+            _populate = populate;
+            _musicCollection = musicCollection;
             _logger = logger;
 
         }
@@ -25,9 +29,9 @@ namespace Infrastructure.Persistence.Services
                 var fileName = Path.Combine(Directory.GetCurrentDirectory(), "Sources", FileTypes.ArtistCollection, FileTypes.ArtistCollection);
                 using var streamer = File.OpenText(fileName);
                 int row = 0;
-                string line;
+                string record;
 
-                while ((line = await streamer.ReadLineAsync()) != null)
+                while ((record = await streamer.ReadLineAsync()) != null)
                 {
                     row++;
                     if (row <= 3)
@@ -36,52 +40,33 @@ namespace Infrastructure.Persistence.Services
                     switch (fileType)
                     {
                         case FileTypes.ArtistCollection:
-                            Console.WriteLine("Case 1");
-                            break;
+                            //Populate data to be inserted to table.
+                            var artistCollection = _populate.PopulateArtistCollection(record);
+                            _musicCollection.ArtistCollection(artistCollection);
+                            continue;
                         case FileTypes.Artist:
-                            Console.WriteLine("Case 2");
-                            break;
+                            var artist = _populate.PopulateArtist(record);
+                            _musicCollection.Artist(artist);
+                            continue;
+                        case FileTypes.CollectionMatch:
+                            var collectionMatch = _populate.PopulateCollectionMatch(record);
+                            _musicCollection.CollectionMatch(collectionMatch);
+                            continue;
+                        case FileTypes.Collection:
+                            var collection = _populate.PopulateCollection(record);
+                            _musicCollection.Collection(collection);
+                            continue;
                         default:
                             Console.WriteLine("Default case");
                             break;
                     }
-                    
-
-                    
                 }
-
-                
-
             }
             catch (System.Exception ex)
             {
                 _logger.LogError(ex.Message);
             }
 
-        }
-
-        private ArtistCollection PopulateArtistCollection(string record)
-        {
-            try
-            {
-                var firstValue = record.Replace("\u0002", "");
-                var secondValue = firstValue.Split('\x01');
-
-                var artistCollection = new ArtistCollection
-				{
-					ExportDate = secondValue[0],
-					ArtistId = int.Parse(secondValue[1]),
-					CollectionId = int.Parse(secondValue[2]),
-					IsPrimaryArtist = secondValue[3],
-					RoleId = int.Parse(secondValue[4]),
-				};
-                return artistCollection;
-            }
-            catch (System.Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return null;
-            }
         }
     }
 }

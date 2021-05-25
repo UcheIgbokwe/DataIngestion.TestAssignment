@@ -1,5 +1,7 @@
+using System;
 using System.Threading;
 using Application.Features.GoogleDrive.Commands.DownloadFile;
+using Domain;
 using Infrastructure.Persistence.Interface;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -33,7 +35,10 @@ namespace DataIngestion.TestAssignment
                 //await _mediator.Send(request, cancellationToken);
 
                 //Populate respective tables.
-                await _drillData.DrillData("artist_collection");
+                foreach (FType fileType in (FType[]) Enum.GetValues(typeof(FType)))
+                {
+                    await _drillData.DrillData(fileType.ToString());
+                }
 
             }
             catch (System.Exception ex)

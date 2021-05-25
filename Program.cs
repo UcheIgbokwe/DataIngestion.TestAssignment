@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Infrastructure.Persistence.DataContext;
 using Infrastructure.Persistence.Interface;
+using Infrastructure.Persistence.Repository;
 using Infrastructure.Persistence.Services;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -24,6 +25,8 @@ namespace DataIngestion.TestAssignment
             services.AddTransient<Worker>();
             services.AddDbContext<AppDbContext>(options => options.UseSqlServer("Data Source=127.0.0.1,1433;Initial Catalog=IngestionDb;User Id=sa;Password=Ebubechi89;"));
             services.AddSingleton<IDrillData, DrillDataService>();
+            services.AddScoped<IMusicCollectionRepository, MusicCollectionRepository>();
+            services.AddScoped<IPopulate, PopulateService>();
 
             var serviceProvider = services.BuildServiceProvider();
             
