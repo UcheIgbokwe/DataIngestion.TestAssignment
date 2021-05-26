@@ -12,5 +12,6 @@ namespace Domain.Model
 		public string IsActualArtist { get; set; }
 		public string ViewUrl { get; set; }
 		public string ArtistTypeId { get; set; }
+        
     }
 }

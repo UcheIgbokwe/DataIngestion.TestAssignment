@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ using Nest;
 
 namespace Application.Features.GoogleDrive.Commands.ElasticSearch
 {
-    public class ElasticSearchCommandHandler : IRequestHandler<ElasticSearchCommand, BulkResponse>
+    public class ElasticSearchCommandHandler : IRequestHandler<ElasticSearchCommand, bool>
     {
         private readonly ElasticClient _client;
         public ElasticSearchCommandHandler(ElasticClient client)
@@ -15,19 +16,25 @@ namespace Application.Features.GoogleDrive.Commands.ElasticSearch
             _client = client;
 
         }
-        public async Task<BulkResponse> Handle(ElasticSearchCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(ElasticSearchCommand request, CancellationToken cancellationToken)
         {
-            var bulkResponse = new BulkResponse();
-            var response = request.Library.Select(x => new BulkIndexOperation<Album>(x))
-                                            .Cast<IBulkOperation>().ToList();
-            
-            var bulkRequest = new BulkRequest()
-            {
-                Refresh = new Elasticsearch.Net.Refresh(),
-                Operations = response
-            };
 
-            return await _client.BulkAsync(bulkRequest, cancellationToken);
+            try
+            {
+                 var bag = new ConcurrentBag<object>();
+                var load = request.Library.Select(async x => {
+                    var assignLoad = await _client.IndexDocumentAsync(x);
+                    bag.Add(assignLoad);
+                });
+                await Task.WhenAll(load);
+
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                 // TODO
+                 return false;
+            }
         }
     }
 }

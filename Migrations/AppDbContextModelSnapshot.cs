@@ -151,8 +151,8 @@ namespace DataIngestion.TestAssignment.Migrations
                     b.Property<string>("AmgAlbumId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CollectionId")
-                        .HasColumnType("int");
+                    b.Property<long>("CollectionId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ExportDate")
                         .HasColumnType("nvarchar(max)");

@@ -19,7 +19,7 @@ namespace Infrastructure.Persistence.Repository
             _logger = logger;
 
         }
-        public bool Artist(Artist artist)
+        public async Task<bool> Artist(Artist artist)
         {
             try
             {
@@ -31,11 +31,11 @@ namespace Infrastructure.Persistence.Repository
                     {
                         return false;
                     }
-                    _dbContext.Artists.Add(artist);
+                    await _dbContext.Artists.AddAsync(artist);
 
                     try
                     { 
-                        if (_dbContext.SaveChanges() > 0)
+                        if ( await _dbContext.SaveChangesAsync() > 0)
                         {
                             _logger.LogInformation($"{artist.ArtistId} has been saved.");
                             return true;
@@ -56,7 +56,7 @@ namespace Infrastructure.Persistence.Repository
             }
         }
 
-        public bool ArtistCollection(ArtistCollection artistCollection)
+        public async Task<bool> ArtistCollection(ArtistCollection artistCollection)
         {
             try
             {
@@ -68,11 +68,11 @@ namespace Infrastructure.Persistence.Repository
                     {
                         return false;
                     }
-                    _dbContext.ArtistCollections.Add(artistCollection);
+                    await _dbContext.ArtistCollections.AddAsync(artistCollection);
 
                     try
                     { 
-                        if (_dbContext.SaveChanges() > 0)
+                        if (await _dbContext.SaveChangesAsync() > 0)
                         {
                             _logger.LogInformation($"{artistCollection.ArtistId} has been saved.");
                             return true;
@@ -93,7 +93,7 @@ namespace Infrastructure.Persistence.Repository
             }
         }
 
-        public bool Collection(Collection collection)
+        public async Task<bool> Collection(Collection collection)
         {
             try
             {
@@ -105,11 +105,11 @@ namespace Infrastructure.Persistence.Repository
                     {
                         return false;
                     }
-                    _dbContext.Collections.Add(collection);
+                    await _dbContext.Collections.AddAsync(collection);
 
                     try
                     { 
-                        if (_dbContext.SaveChanges() > 0)
+                        if (await _dbContext.SaveChangesAsync() > 0)
                         {
                             _logger.LogInformation($"{collection.CollectionId} has been saved.");
                             return true;
@@ -130,7 +130,7 @@ namespace Infrastructure.Persistence.Repository
             }
         }
 
-        public bool CollectionMatch(CollectionMatch collectionMatch)
+        public async Task<bool> CollectionMatch(CollectionMatch collectionMatch)
         {
             try
             {
@@ -142,11 +142,11 @@ namespace Infrastructure.Persistence.Repository
                     {
                         return false;
                     }
-                    _dbContext.CollectionMatches.Add(collectionMatch);
+                    await _dbContext.CollectionMatches.AddAsync(collectionMatch);
 
                     try
                     { 
-                        if (_dbContext.SaveChanges() > 0)
+                        if (await _dbContext.SaveChangesAsync() > 0)
                         {
                             _logger.LogInformation($"{collectionMatch.CollectionId} has been saved.");
                             return true;
@@ -167,27 +167,35 @@ namespace Infrastructure.Persistence.Repository
             }
         }
 
-        public List<Album> GetAlbums(int size, int skip)
+        public async Task<List<Album>> GetAlbums(int size, int skip)
         {
             try
             {
                 var load = (from a in _dbContext.ArtistCollections
                                 join b in _dbContext.Collections on a.CollectionId equals b.CollectionId
                                 join c in _dbContext.CollectionMatches on a.CollectionId equals c.CollectionId
+
                                 select new Album
                                 {
                                     Id = b.CollectionId,
                                     Name = b.Name,
-                                    ImageUrl = b.ViewUrl,
-                                    Upc = c.Upc,
-                                    ReleaseDate = b.OriginalReleaseDate,
-                                    IsCompilation = b.IsCompilation,
-                                    Label = b.LabelStudio,
-                                    Url = b.ArtworkUrl,
+                                    ImageUrl = !string.IsNullOrEmpty(b.ViewUrl) ? b.ViewUrl : "null",
+                                    Upc = !string.IsNullOrEmpty(c.Upc) ? c.Upc : "null",
+                                    ReleaseDate = !string.IsNullOrEmpty(b.OriginalReleaseDate) ? b.OriginalReleaseDate : "null",
+                                    IsCompilation = !string.IsNullOrEmpty(b.IsCompilation) ? b.IsCompilation : "null",
+                                    Label = !string.IsNullOrEmpty(b.LabelStudio) ? b.LabelStudio : "null",
+                                    Url = !string.IsNullOrEmpty(b.ArtworkUrl) ? b.ArtworkUrl : "null",
                                     ArtistId = a.ArtistId
+                                    
                                 }).Skip(skip).Take(size).ToList();
-                
-                var refinedLoad = load.Select(d => d.Artists = new List<Artistt>(GetArtistts(d.ArtistId)));
+
+                var newLoad = load.Select( async a => 
+                { 
+                    var b = a.Artistts = new List<Artistt>(GetArtistts(a.ArtistId));
+                });
+
+                await Task.WhenAll(newLoad);
+
                 return load;
             }
             catch (DbUpdateException ex)
@@ -201,7 +209,14 @@ namespace Infrastructure.Persistence.Repository
         {
             try
             {
-                return _dbContext.Artists.Where(c => c.ArtistId == Id).Select(p => new Artistt { Id = p.ArtistId, Name = p.Name}).Distinct().ToList();
+                var load = (from d in _dbContext.Artists where d.ArtistId == Id
+                            select new Artistt 
+                            {
+                                Id = d.ArtistId,
+                                Name = d.Name
+                            }).Distinct().ToList();
+
+                return load;
             }
             catch (DbUpdateException ex)
             {
@@ -209,5 +224,6 @@ namespace Infrastructure.Persistence.Repository
                 return null;
             }
         }
+
     }
 }

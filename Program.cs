@@ -2,12 +2,7 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Infrastructure.Persistence.DataContext;
-using Infrastructure.Persistence.Interface;
-using Infrastructure.Persistence.Repository;
-using Infrastructure.Persistence.Services;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -20,6 +15,7 @@ namespace DataIngestion.TestAssignment
             try
             {
                 var services = new ServiceCollection()
+                .AddElasticServices()
                 .AddInfrastructureServices()
                 .AddLogging(b => b.AddConsole())
 				.AddMediatR(Assembly.GetExecutingAssembly());

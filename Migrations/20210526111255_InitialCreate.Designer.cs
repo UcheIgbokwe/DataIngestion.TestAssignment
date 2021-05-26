@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataIngestion.TestAssignment.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210525203704_InitialCreate")]
+    [Migration("20210526111255_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -153,8 +153,8 @@ namespace DataIngestion.TestAssignment.Migrations
                     b.Property<string>("AmgAlbumId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CollectionId")
-                        .HasColumnType("int");
+                    b.Property<long>("CollectionId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("ExportDate")
                         .HasColumnType("nvarchar(max)");

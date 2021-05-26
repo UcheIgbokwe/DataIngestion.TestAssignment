@@ -48,7 +48,7 @@ namespace DataIngestion.TestAssignment.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ExportDate = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CollectionId = table.Column<int>(type: "int", nullable: false),
+                    CollectionId = table.Column<long>(type: "bigint", nullable: false),
                     Upc = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Grid = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AmgAlbumId = table.Column<string>(type: "nvarchar(max)", nullable: true)

@@ -5,7 +5,7 @@ using Nest;
 
 namespace Application.Features.GoogleDrive.Commands.ElasticSearch
 {
-    public class ElasticSearchCommand : MediatR.IRequest<BulkResponse>
+    public class ElasticSearchCommand : MediatR.IRequest<bool>
     {
         public IEnumerable<Album> Library { get; set; }
     }

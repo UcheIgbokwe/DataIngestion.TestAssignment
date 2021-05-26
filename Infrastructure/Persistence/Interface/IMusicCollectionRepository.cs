@@ -6,11 +6,11 @@ namespace Infrastructure.Persistence.Interface
 {
     public interface IMusicCollectionRepository
     {
-        bool Artist(Artist artist);
-        bool ArtistCollection(ArtistCollection artistCollection);
-        bool Collection(Collection collection);
-        bool CollectionMatch(CollectionMatch collectionMatch);
-        List<Album> GetAlbums(int size, int skip);
+        Task<bool> Artist(Artist artist);
+        Task<bool> ArtistCollection(ArtistCollection artistCollection);
+        Task<bool> Collection(Collection collection);
+        Task<bool> CollectionMatch(CollectionMatch collectionMatch);
+        Task<List<Album>> GetAlbums(int size, int skip);
         List<Artistt> GetArtistts(long Id);
     }
 }

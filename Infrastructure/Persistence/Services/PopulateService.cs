@@ -110,7 +110,7 @@ namespace Infrastructure.Persistence.Services
                 var collectionMatch = new CollectionMatch
                 {
                     ExportDate = secondValue[0],
-                    CollectionId = int.Parse(secondValue[1]),
+                    CollectionId = long.Parse(secondValue[1]),
                     Upc = secondValue[2],
                     Grid = secondValue[3],
                     AmgAlbumId = secondValue[4]

@@ -16,7 +16,7 @@ namespace Domain.Model
         public string Label { get; set; }
         public string ImageUrl { get; set; }
         public long ArtistId { get; set; }
-        public ICollection<Artistt> Artists { get; set; } = new List<Artistt>();
+        public List<Artistt> Artistts { get; set; } 
 
     }
 

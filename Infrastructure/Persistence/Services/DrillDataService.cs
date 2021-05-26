@@ -42,19 +42,19 @@ namespace Infrastructure.Persistence.Services
                         case FileTypes.ArtistCollection:
                             //Populate data to be inserted to table.
                             var artistCollection = _populate.PopulateArtistCollection(record);
-                            _musicCollection.ArtistCollection(artistCollection);
+                            await _musicCollection.ArtistCollection(artistCollection);
                             continue;
                         case FileTypes.Artist:
                             var artist = _populate.PopulateArtist(record);
-                            _musicCollection.Artist(artist);
+                            await _musicCollection.Artist(artist);
                             continue;
                         case FileTypes.CollectionMatch:
                             var collectionMatch = _populate.PopulateCollectionMatch(record);
-                            _musicCollection.CollectionMatch(collectionMatch);
+                            await _musicCollection.CollectionMatch(collectionMatch);
                             continue;
                         case FileTypes.Collection:
                             var collection = _populate.PopulateCollection(record);
-                            _musicCollection.Collection(collection);
+                            await _musicCollection.Collection(collection);
                             continue;
                         default:
                             Console.WriteLine("Default case");

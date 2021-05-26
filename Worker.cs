@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Application.Features.GoogleDrive.Commands.DownloadFile;
 using Application.Features.GoogleDrive.Commands.ElasticSearch;
 using Domain;
@@ -51,7 +54,7 @@ namespace DataIngestion.TestAssignment
                 {
                     var elasticRequest = new ElasticSearchCommand()
                     {
-                        Library = _musicCollection.GetAlbums(size, skip)
+                        Library = await _musicCollection.GetAlbums(size, skip)
                     };
                     await _mediator.Send(elasticRequest, cancellationToken);
                     skip += size;
