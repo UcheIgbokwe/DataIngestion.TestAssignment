@@ -13,6 +13,7 @@ namespace Test
         [Fact]
         public void Create_Elastic_Search_Object()
         {
+            //Arrange
             var albums = AllAlbum().ToList();
             var hits = new List<IHit<Album>>
             {
@@ -25,6 +26,7 @@ namespace Test
 
             var mockElasticClient = new Mock<IElasticClient>();
 
+            //Act
             mockElasticClient.Setup(x => x
                 .Search(It.IsAny<Func<SearchDescriptor<Album>, ISearchRequest>>()))
             .Returns(mockSearchResponse.Object);
@@ -33,6 +35,7 @@ namespace Test
             var r2 = mockElasticClient.Object.Index(new Album(), null);
             var result = mockElasticClient.Object.Search<Album>(s => s);
 
+            //Assert
             Assert.Equal(3, result.Documents.Count);
             Assert.Equal(1, result.Hits.Count);
         }
