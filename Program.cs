@@ -2,7 +2,11 @@
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Infrastructure.Extensions;
+using Infrastructure.Persistence.DataContext;
 using MediatR;
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -24,11 +28,23 @@ namespace DataIngestion.TestAssignment
                 
 
                 var serviceProvider = services.BuildServiceProvider();
-                
+
                 var worker = serviceProvider.GetService<Worker>();
 
                 var logger = serviceProvider.GetService<ILogger<Program>>();
                 logger.LogInformation("Starting Application!");
+
+                try
+                {
+                    logger.LogInformation($"Migrating database associated with context {typeof(AppDbContext).Name}");
+                    var db = serviceProvider.GetRequiredService<AppDbContext>();
+                    db.Database.Migrate();
+                    logger.LogInformation($"Migrated database associated with context {typeof(AppDbContext).Name}");
+                }
+                catch (SqlException ex)
+                {
+                    logger.LogError($"An error occuredwhile migrating database used on context {typeof(AppDbContext).Name}, Message: {ex.Message}");
+                }
 
                 worker.Run(CancellationToken.None);
 
@@ -39,9 +55,11 @@ namespace DataIngestion.TestAssignment
             }
             catch (System.Exception ex)
             {
-                 // TODO
+
             }
             
         }
+
+        
     }
 }
